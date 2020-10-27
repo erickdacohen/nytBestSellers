@@ -3,6 +3,12 @@
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from pyprojroot import here
+from datetime import datetime
+
+# Setup file path for final csv output
+path_to_output = here('data-output')
+todaysDate = datetime.today().strftime('%Y-%m-%d')
 
 # GET request
 url = "https://www.nytimes.com/books/best-sellers/hardcover-nonfiction/"
@@ -40,8 +46,6 @@ nytDf = pd.DataFrame({
   ]
 })
 
-print(nytDf)
-
 def makeNytDf(infoItem, tag, class_name):
   # get the "soup"
   infoItem = getNytText(str(tag), str(class_name))
@@ -57,6 +61,13 @@ def makeNytDf(infoItem, tag, class_name):
 
 scrapedNyt = pd.DataFrame(map(makeNytDf, nytDf['infoItem'], nytDf['tag'], nytDf['class'])).transpose().rename(columns = nytDf['infoItem'])
 
+# remove the word "by" from the author series
+scrapedNyt['author'] = scrapedNyt['author'].map(lambda x: x.lstrip('By '))
+
 print(scrapedNyt)
 
+# Save to output folder 
+scrapedNyt.to_csv(str(path_to_output) + '/' + str(todaysDate) + '_nytBestSellers.csv', index = False)
+
+print('Please find your file in the data-output folder')
 ###
