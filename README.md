@@ -1,3 +1,13 @@
 # NytBestSeller
 
-This script uses python to scrape the NYT best-selling books list.
+---
+
+Used to scrape the NYT best-selling books list and output a CSV file.
+
+## Usage
+
+`python3 src/acquire.py`
+
+## Dependencies
+
+1. BeautifulSoup4
