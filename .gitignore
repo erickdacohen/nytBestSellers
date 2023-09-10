@@ -3,4 +3,5 @@ bin
 include
 lib
 pyvenv.cfg
-.*.csv
+*.csv
+env

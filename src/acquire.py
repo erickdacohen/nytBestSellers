@@ -8,18 +8,10 @@ from datetime import datetime
 PATH_TO_OUTPUT = "./"
 todaysDate = datetime.today().strftime('%Y-%m-%d')
 
-# GET request
+# Call the GET request
 url = "https://www.nytimes.com/books/best-sellers/hardcover-nonfiction/"
 page = requests.get(url)
 soup = BeautifulSoup(page.content, 'html.parser')
-
-# define a function to get the "soup"
-
-
-def getNytText(tag, myClass):
-    myList = soup.find_all(str(tag), class_=str(myClass))
-    return (myList)
-
 
 # Create a dataframe that contains the items we need to iterate through
 nytDf = pd.DataFrame({
@@ -47,7 +39,19 @@ nytDf = pd.DataFrame({
 })
 
 
-def makeNytDf(infoItem, tag, class_name):
+
+# define helper functions
+def getNytText(tag: str, myClass: str) -> list:
+    """Performs GET request and returns list of all matches"""
+    
+    myList = soup.find_all(str(tag), class_=str(myClass))
+    return (myList)
+
+
+def makeNytDf(infoItem: str, tag: str, class_name: str) -> list:
+    """
+    Iterate through each item of interest
+    """
     # get the "soup"
     infoItem = getNytText(str(tag), str(class_name))
 
@@ -60,7 +64,9 @@ def makeNytDf(infoItem, tag, class_name):
     return (output)
 
 
-def acquireBestSellers():
+def acquireBestSellers() -> None:
+    """Executes helper functions to save as CSV file"""
+    
     scrapedNyt = pd.DataFrame(
         map(makeNytDf, nytDf['infoItem'], nytDf['tag'], nytDf['class'])).transpose(
     ).rename(columns=nytDf['infoItem'])
